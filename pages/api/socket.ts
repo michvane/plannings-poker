@@ -1,3 +1,4 @@
+import socketEvents from "constants/events";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Server } from "socket.io";
 import { User } from "../../types";
@@ -32,14 +33,33 @@ const removeUser = (id: string) => {
   return users[index];
 };
 
-const updateUser = (user: User, card: number) => {
-  const index = users.findIndex((existingUser) => existingUser.id === user.id);
+const getUserById = (id: string) => {
+  const index = users.findIndex((user) => user.id === id);
+  return users[index];
+};
+
+const updateUser = (id: string, card: number) => {
+  const index = users.findIndex((existingUser) => existingUser.id === id);
   if (index === -1) {
     console.log("no user found");
     return;
   }
   users[index].selectedCard = card;
   return users;
+};
+
+const getUsersByRoom = (room: string) => {
+  return users.filter((user) => user.room === room);
+};
+
+const deleteEstimations = (room: string) => {
+  const newUsers = users.map((user) => {
+    if (user.room !== room) return user;
+    user.selectedCard = null;
+    return user;
+  });
+
+  users = newUsers;
 };
 
 const SocketHandler = (req: NextApiRequest, res: Data) => {
@@ -57,32 +77,44 @@ const SocketHandler = (req: NextApiRequest, res: Data) => {
         const { user } = addUser({ id: socket.id, name, room });
 
         if (!user) return;
-        // if (error) return console.log(error);
-
-        console.log("sending this to FE", users);
-        socket.emit("message", {
-          message: `Welcome to ${user.room}`,
-        });
-
-        socket.emit("users", users);
-
-        socket.broadcast.to(user.room).emit("message", {
-          message: `${user.name} has joined!`,
-        });
-
-        socket.broadcast.to(user.room).emit("addUser", user);
 
         socket.join(user.room as string);
 
-        socket.on("card-change", (card: number) => {
-          const newUsers = updateUser(user, card);
-          socket.broadcast.emit("update-cards", newUsers);
-          socket.emit("update-cards", newUsers);
+        socket.emit(socketEvents.setMessage, {
+          message: `Welcome to ${user.room}`,
         });
+
+        socket.emit(socketEvents.setUsers, getUsersByRoom(room));
+
+        socket.broadcast.to(user.room).emit(socketEvents.setMessage, {
+          message: `${user.name} has joined!`,
+        });
+
+        socket.broadcast.to(user.room).emit(socketEvents.addUser, user);
+      });
+
+      socket.on(socketEvents.updateCard, (card: number) => {
+        updateUser(socket.id, card);
+        const currentUser = getUserById(socket.id);
+        const usersByRoom = getUsersByRoom(currentUser.room);
+        io.to(currentUser.room).emit(socketEvents.updateCard, usersByRoom);
+      });
+
+      socket.on(socketEvents.showCards, () => {
+        const room = getUserById(socket.id).room;
+        io.to(room).emit(socketEvents.showCards);
+      });
+
+      socket.on(socketEvents.deleteEstimations, () => {
+        const room = getUserById(socket.id).room;
+        deleteEstimations(room);
+        const users = getUsersByRoom(room);
+        io.to(room).emit(socketEvents.deleteEstimations, users);
       });
 
       // TODO: Test Disconnect
       socket.on("disconnect", () => {
+        console.log("disconnected");
         const user = removeUser(socket.id);
         io.to(user.room).emit("message", {
           user: "Admin",

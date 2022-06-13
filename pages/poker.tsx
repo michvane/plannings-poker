@@ -6,6 +6,7 @@ import styles from "../styles/Home.module.css";
 import { io, Socket } from "socket.io-client";
 import { useRouter } from "next/router";
 import { User } from "../types";
+import socketEvents from "constants/events";
 
 let socket: Socket;
 
@@ -13,6 +14,7 @@ const Home: NextPage = () => {
   const [messages, setMessages] = useState<string[]>([]);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [users, setUsers] = useState<User[]>([]);
+  const [showCards, setShowCards] = useState(false);
 
   const router = useRouter();
 
@@ -26,21 +28,30 @@ const Home: NextPage = () => {
       console.log("joining");
       socket.emit("join", { name: router.query.name, room: router.query.room });
 
-      socket.on("update-cards", (users: User[]) => {
+      socket.on(socketEvents.updateCard, (users: User[]) => {
+        console.log(users);
         setUsers(users);
       });
-      socket.on("message", ({ message }) => {
+      socket.on(socketEvents.setMessage, ({ message }) => {
         // Quick display of user joined
         setMessages((messages) => [...messages, message]);
       });
-      socket.on("addUser", (user) => {
-        console.log("user received from server:", user);
+      socket.on(socketEvents.addUser, (user) => {
         setUsers((users) => [...users, user]);
       });
 
-      socket.on("users", (users) => {
-        console.log("setting all users:", users);
+      socket.on(socketEvents.setUsers, (users) => {
         setUsers(users);
+      });
+
+      socket.on(socketEvents.showCards, () => {
+        setShowCards(true);
+      });
+
+      socket.on(socketEvents.deleteEstimations, (users: User[]) => {
+        setShowCards(false);
+        setUsers(users);
+        setSelectedCard(null);
       });
     };
 
@@ -51,7 +62,16 @@ const Home: NextPage = () => {
 
   const selectCardHandler = (e: number) => {
     setSelectedCard(e);
-    socket.emit("card-change", e);
+    socket.emit(socketEvents.updateCard, e);
+  };
+
+  const handleShowCards = () => {
+    socket.emit(socketEvents.showCards);
+  };
+
+  const handleDeleteEstimations = () => {
+    socket.emit(socketEvents.deleteEstimations);
+    setSelectedCard(null);
   };
 
   return (
@@ -93,6 +113,8 @@ const Home: NextPage = () => {
               </div>
             ))}
         </div>
+        <button onClick={handleShowCards}>Show cards</button>
+        <button onClick={handleDeleteEstimations}>Delete estimations</button>
       </main>
     </div>
   );

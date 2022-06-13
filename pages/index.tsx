@@ -1,34 +1,32 @@
+import Container from "components/Container";
+import Form from "components/organisms/Form";
 import { NextPage } from "next";
 import Link from "next/link";
 import { useState } from "react";
+import Typography from "../components/Typography";
 
 const Home: NextPage = () => {
   const [name, setName] = useState("");
   const [room, setRoom] = useState("");
 
   return (
-    <form>
-      <label htmlFor="email">Email</label>
-      <input
-        placeholder="Name"
-        type="text"
-        onChange={(event) => setName(event.target.value)}
-        required
-      />
-      <label htmlFor="room">room</label>
-      <input
-        placeholder="Room"
-        type="text"
-        onChange={(event) => setRoom(event.target.value)}
-        required
-      />
-      <Link
-        onClick={(e) => (!name || !room ? e.preventDefault() : null)}
-        href={`/poker?name=${name}&room=${room}`}
+    <div className="min-h-screen w-screen flex justify-center items-center">
+      <Container
+        size="wide"
+        className="flex justify-center align-center flex-col"
       >
-        <button>Sign In</button>
-      </Link>
-    </form>
+        <Typography
+          as="h1"
+          variant="xl"
+          className={`text-defaultLight text-center font-bold`}
+        >
+          MoonPay
+          <br />
+          Planning Poker
+        </Typography>
+        <Form name={name} room={room} setName={setName} setRoom={setRoom} />
+      </Container>
+    </div>
   );
 };
 

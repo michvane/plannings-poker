@@ -1,0 +1,103 @@
+/* 53px-72px-88px */
+.hero {
+  font-size: 3.3rem;
+  line-height: 3.8rem;
+  @screen md {
+    font-size: 4.5rem;
+    line-height: 4rem;
+  }
+  @screen lg {
+    font-size: 5.5rem;
+    line-height: 5.9rem;
+  }
+}
+
+/* 60px-72px */
+.xxl {
+  font-size: 3.75rem;
+  line-height: 4.625rem;
+  @screen md {
+    font-size: 4.5rem;
+    line-height: 5.625rem;
+  }
+}
+
+/* 48px-60px */
+.xl {
+  font-size: 3rem;
+  line-height: 3.75rem;
+  @screen md {
+    font-size: 3.75rem;
+    line-height: 4.625rem;
+  }
+}
+
+/* 36px-48px */
+.lg {
+  font-size: 2.25rem;
+  line-height: 2.75rem;
+  @screen md {
+    font-size: 3rem;
+    line-height: 3.75rem;
+  }
+}
+
+/* 30px-36px */
+.md {
+  font-size: 1.875rem;
+  line-height: 2.375rem;
+  @screen md {
+    font-size: 2.25rem;
+    line-height: 2.75rem;
+  }
+}
+
+/* 24px-30px */
+.sm {
+  font-size: 1.5rem;
+  line-height: 2rem;
+  @screen md {
+    font-size: 1.875rem;
+    line-height: 2.375rem;
+  }
+}
+
+/* 20px-24px */
+.xs {
+  font-size: 1.25rem;
+  line-height: 1.875rem;
+  @screen md {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+}
+
+/* 20px */
+.textXL {
+  font-size: 1.25rem;
+  line-height: 1.875rem;
+}
+
+/* 18px */
+.textLG {
+  font-size: 1.125rem;
+  line-height: 1.75rem;
+}
+
+/* 17px */
+.textMD {
+  font-size: 1.063rem;
+  line-height: 1.5rem;
+}
+
+/* 14px */
+.textSM {
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+}
+
+/* 12px */
+.textXS {
+  font-size: 0.75rem;
+  line-height: 1.125rem;
+}
