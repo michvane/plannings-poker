@@ -77,6 +77,7 @@ const SocketHandler = (req: NextApiRequest, res: Data) => {
         socket.on("card-change", (card: number) => {
           const newUsers = updateUser(user, card);
           socket.broadcast.emit("update-cards", newUsers);
+          socket.emit("update-cards", newUsers);
         });
       });
 
