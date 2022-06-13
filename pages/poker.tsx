@@ -7,15 +7,10 @@ import { io, Socket } from "socket.io-client";
 import { useRouter } from "next/router";
 import { User } from "../types";
 
-type Message = {
-  user: string;
-  text: string;
-};
-
 let socket: Socket;
 
 const Home: NextPage = () => {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<string[]>([]);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [users, setUsers] = useState<User[]>([]);
 
@@ -26,7 +21,7 @@ const Home: NextPage = () => {
       await fetch("/api/socket");
       socket = io();
 
-      if (!socket) return;
+      if (!socket || !router.query.name || !router.query.room) return;
 
       console.log("joining");
       socket.emit("join", { name: router.query.name, room: router.query.room });
@@ -34,20 +29,25 @@ const Home: NextPage = () => {
       socket.on("update-cards", (users: User[]) => {
         setUsers(users);
       });
-      socket.on("message", (message) => {
+      socket.on("message", ({ message }) => {
         // Quick display of user joined
         setMessages((messages) => [...messages, message]);
       });
+      socket.on("addUser", (user) => {
+        console.log("user received from server:", user);
+        setUsers((users) => [...users, user]);
+      });
+
       socket.on("users", (users) => {
-        console.log("users received from server:", users);
+        console.log("setting all users:", users);
         setUsers(users);
       });
     };
 
     socketInitializer();
-  }, [router.query.name, router.query.room]);
+  }, [router.query]);
 
-  console.log(users);
+  console.log("actual users in FE:", users);
 
   const selectCardHandler = (e: number) => {
     setSelectedCard(e);
@@ -65,7 +65,7 @@ const Home: NextPage = () => {
       <main className={styles.main}>
         <div>
           {messages.map((val, i) => {
-            return <div key={i}>{val.text}</div>;
+            return <div key={i}>{val}</div>;
           })}
         </div>
         <div className={styles.grid}>
@@ -85,12 +85,13 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div>
-          {users.map((user: User) => (
-            <div key={user.name}>
-              <span>{user.name}</span>
-              <span>{user.selectedCard}</span>
-            </div>
-          ))}
+          {users.length > 0 &&
+            users.map((user: User) => (
+              <div key={user.name}>
+                <span>{user.name}</span>
+                <span>{user.selectedCard}</span>
+              </div>
+            ))}
         </div>
       </main>
     </div>

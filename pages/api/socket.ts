@@ -20,7 +20,7 @@ const addUser = ({
   name: string;
   room: string;
 }) => {
-  if (!name || !room) return { error: "name and room required." };
+  // if (!name || !room) return { error: "name and room required." };
   const user = { id, name, room, selectedCard: null };
   users.push(user);
 
@@ -33,7 +33,6 @@ const removeUser = (id: string) => {
 };
 
 const updateUser = (user: User, card: number) => {
-  console.log(users, "user:", user, card);
   const index = users.findIndex((existingUser) => existingUser.id === user.id);
   if (index === -1) {
     console.log("no user found");
@@ -53,27 +52,25 @@ const SocketHandler = (req: NextApiRequest, res: Data) => {
     res.socket.server.io = io;
 
     io.on("connection", (socket) => {
-      // Card change
-
       // Join room
       socket.on("join", ({ name, room }) => {
-        console.log("user joined", name, room);
-        const { user, error } = addUser({ id: socket.id, name, room });
+        const { user } = addUser({ id: socket.id, name, room });
 
         if (!user) return;
-        if (error) return console.log(error);
+        // if (error) return console.log(error);
 
+        console.log("sending this to FE", users);
         socket.emit("message", {
-          user: "Admin",
-          text: `Welcome to ${user.room}`,
+          message: `Welcome to ${user.room}`,
         });
 
         socket.emit("users", users);
 
         socket.broadcast.to(user.room).emit("message", {
-          user: user.name,
-          text: `${user.name} has joined!`,
+          message: `${user.name} has joined!`,
         });
+
+        socket.broadcast.to(user.room).emit("addUser", user);
 
         socket.join(user.room as string);
 
