@@ -40,6 +40,7 @@ const updateUser = (user: User, card: number) => {
     return;
   }
   users[index].selectedCard = card;
+  return users;
 };
 
 const SocketHandler = (req: NextApiRequest, res: Data) => {
@@ -77,8 +78,8 @@ const SocketHandler = (req: NextApiRequest, res: Data) => {
         socket.join(user.room as string);
 
         socket.on("card-change", (card: number) => {
-          updateUser(user, card);
-          socket.broadcast.emit("update-cards", users);
+          const newUsers = updateUser(user, card);
+          socket.broadcast.emit("update-cards", newUsers);
         });
       });
 

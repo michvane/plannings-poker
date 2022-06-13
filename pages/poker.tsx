@@ -38,13 +38,16 @@ const Home: NextPage = () => {
         // Quick display of user joined
         setMessages((messages) => [...messages, message]);
       });
-      socket.on("users", (users) => setUsers(users));
+      socket.on("users", (users) => {
+        console.log("users received from server:", users);
+        setUsers(users);
+      });
     };
 
     socketInitializer();
   }, [router.query.name, router.query.room]);
 
-  console.log(messages);
+  console.log(users);
 
   const selectCardHandler = (e: number) => {
     setSelectedCard(e);
