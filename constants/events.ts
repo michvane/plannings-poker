@@ -5,6 +5,7 @@ const socketEvents = {
   setUsers: "setUsers",
   setMessage: "setMessage",
   addUser: "addUser",
+  disconnect: "disconnectUser",
 };
 
 export default socketEvents;

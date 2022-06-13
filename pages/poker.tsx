@@ -25,11 +25,9 @@ const Home: NextPage = () => {
 
       if (!socket || !router.query.name || !router.query.room) return;
 
-      console.log("joining");
       socket.emit("join", { name: router.query.name, room: router.query.room });
 
       socket.on(socketEvents.updateCard, (users: User[]) => {
-        console.log(users);
         setUsers(users);
       });
       socket.on(socketEvents.setMessage, ({ message }) => {
@@ -53,12 +51,14 @@ const Home: NextPage = () => {
         setUsers(users);
         setSelectedCard(null);
       });
+
+      socket.on(socketEvents.disconnect, (users: User[]) => {
+        setUsers(users);
+      });
     };
 
     socketInitializer();
   }, [router.query]);
-
-  console.log("actual users in FE:", users);
 
   const selectCardHandler = (e: number) => {
     setSelectedCard(e);

@@ -30,7 +30,7 @@ const addUser = ({
 
 const removeUser = (id: string) => {
   const index = users.findIndex((user) => user.id === id);
-  return users[index];
+  users.splice(index, 1);
 };
 
 const getUserById = (id: string) => {
@@ -114,12 +114,11 @@ const SocketHandler = (req: NextApiRequest, res: Data) => {
 
       // TODO: Test Disconnect
       socket.on("disconnect", () => {
-        console.log("disconnected");
-        const user = removeUser(socket.id);
-        io.to(user.room).emit("message", {
-          user: "Admin",
-          text: `${user.name} just left the room`,
-        });
+        const user = getUserById(socket.id);
+        if (!user) return;
+
+        removeUser(socket.id);
+        io.to(user.room).emit(socketEvents.disconnect, users);
       });
     });
   }
