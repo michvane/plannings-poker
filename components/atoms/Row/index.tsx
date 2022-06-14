@@ -15,7 +15,7 @@ const Row: React.FC<RowProps> = ({ name, card, showCards }) => {
     return <>-</>;
   };
   return (
-    <div className="flex flex-nowrap justify-between border-b-2 border-neutral-200">
+    <div className="flex flex-nowrap justify-between border-b-2 border-neutral-200 mb-2">
       <div>{name}</div>
       <div>{cardText()}</div>
     </div>
