@@ -1,12 +1,14 @@
 import type { NextPage } from "next";
 import Head from "next/head";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import styles from "../styles/Home.module.css";
 import { io, Socket } from "socket.io-client";
 import { useRouter } from "next/router";
 import { User } from "../types";
 import socketEvents from "constants/events";
+import Users from "components/organisms/Users";
+import Nav from "components/molecules/Nav";
+import Cards from "components/molecules/Cards";
 
 let socket: Socket;
 
@@ -61,6 +63,7 @@ const Home: NextPage = () => {
   }, [router.query]);
 
   const selectCardHandler = (e: number) => {
+    if (showCards) return;
     setSelectedCard(e);
     socket.emit(socketEvents.updateCard, e);
   };
@@ -82,39 +85,23 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main className={styles.main}>
-        <div>
+      <Nav />
+      <main className={styles.mainPoker}>
+        {/* <div>
           {messages.map((val, i) => {
             return <div key={i}>{val}</div>;
           })}
-        </div>
-        <div className={styles.grid}>
-          <div
-            className={styles.card}
-            onClick={() => selectCardHandler(1)}
-            style={selectedCard === 1 ? { border: "2px solid blue" } : {}}
-          >
-            1
-          </div>
-          <div
-            className={styles.card}
-            onClick={() => selectCardHandler(2)}
-            style={selectedCard === 2 ? { border: "2px solid blue" } : {}}
-          >
-            2
-          </div>
-        </div>
-        <div>
-          {users.length > 0 &&
-            users.map((user: User) => (
-              <div key={user.name}>
-                <span>{user.name}</span>
-                <span>{user.selectedCard}</span>
-              </div>
-            ))}
-        </div>
-        <button onClick={handleShowCards}>Show cards</button>
-        <button onClick={handleDeleteEstimations}>Delete estimations</button>
+        </div> */}
+        <Cards
+          selectedCard={selectedCard}
+          selectCardHandler={selectCardHandler}
+        />
+        <Users
+          users={users}
+          showCards={showCards}
+          handleShowCards={handleShowCards}
+          handleDeleteEstimations={handleDeleteEstimations}
+        />
       </main>
     </div>
   );

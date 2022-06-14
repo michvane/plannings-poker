@@ -1,5 +1,7 @@
 import clsx from "clsx";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 import style from "./form.module.scss";
 
 interface Props {
@@ -10,6 +12,13 @@ interface Props {
 }
 
 const Form: React.FC<Props> = ({ setRoom, setName, name, room }) => {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!router.query.room) return;
+    console.log("setting room");
+    setRoom(router.query.room as string);
+  }, [router.query.room, setRoom]);
   return (
     <form className={clsx([style.form, "bg-neutral-800"])}>
       <label htmlFor="Name">Name</label>
@@ -25,6 +34,7 @@ const Form: React.FC<Props> = ({ setRoom, setName, name, room }) => {
         id="room"
         placeholder="Room"
         type="text"
+        value={room}
         onChange={(event) => setRoom(event.target.value)}
         required
       />

@@ -1,7 +1,6 @@
-import Container from "components/Container";
+import Container from "components/atoms/Container";
 import Form from "components/organisms/Form";
 import { NextPage } from "next";
-import Link from "next/link";
 import { useState } from "react";
 import Typography from "../components/Typography";
 

@@ -81,7 +81,7 @@ const SocketHandler = (req: NextApiRequest, res: Data) => {
         socket.join(user.room as string);
 
         socket.emit(socketEvents.setMessage, {
-          message: `Welcome to ${user.room}`,
+          message: `Welcome to room ${user.room}`,
         });
 
         socket.emit(socketEvents.setUsers, getUsersByRoom(room));
