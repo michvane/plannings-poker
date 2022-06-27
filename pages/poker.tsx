@@ -1,19 +1,19 @@
-import type { NextPage } from "next";
-import Head from "next/head";
-import { useEffect, useState } from "react";
-import styles from "../styles/Home.module.css";
-import { io, Socket } from "socket.io-client";
-import { useRouter } from "next/router";
-import { User } from "../types";
-import socketEvents from "constants/events";
-import Users from "components/organisms/Users";
-import Nav from "components/molecules/Nav";
-import Cards from "components/molecules/Cards";
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import styles from '../styles/Home.module.css';
+import { io, Socket } from 'socket.io-client';
+import { useRouter } from 'next/router';
+import { User } from '../types';
+import socketEvents from 'constants/events';
+import Users from 'components/organisms/Users';
+import Nav from 'components/molecules/Nav';
+import Cards from 'components/molecules/Cards';
 
 let socket: Socket;
 
 const Home: NextPage = () => {
-  const [messages, setMessages] = useState<string[]>([]);
+  // const [messages, setMessages] = useState<string[]>([]);
   const [selectedCard, setSelectedCard] = useState<number | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [showCards, setShowCards] = useState(false);
@@ -22,20 +22,22 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     const socketInitializer = async () => {
-      await fetch("/api/socket");
+      await fetch('/api/socket');
       socket = io();
 
       if (!socket || !router.query.name || !router.query.room) return;
 
-      socket.emit("join", { name: router.query.name, room: router.query.room });
+      socket.emit('join', { name: router.query.name, room: router.query.room });
 
       socket.on(socketEvents.updateCard, (users: User[]) => {
         setUsers(users);
       });
-      socket.on(socketEvents.setMessage, ({ message }) => {
-        // Quick display of user joined
-        setMessages((messages) => [...messages, message]);
-      });
+
+      // socket.on(socketEvents.setMessage, ({ message }) => {
+      //   // Quick display of user joined
+      //   setMessages((messages) => [...messages, message]);
+      // });
+
       socket.on(socketEvents.addUser, (user) => {
         setUsers((users) => [...users, user]);
       });

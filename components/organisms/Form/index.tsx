@@ -1,24 +1,55 @@
 import clsx from 'clsx';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import style from './form.module.scss';
+import useOutsideAlerter from 'hooks/OutsideAlerter';
+
+const options = [
+  { name: 'Swedish', value: 'sv' },
+  { name: 'English', value: 'en' },
+  {
+    type: 'group',
+    name: 'Group name',
+    items: [{ name: 'Spanish', value: 'es' }],
+  },
+];
 
 const Form: React.FC = () => {
   const router = useRouter();
 
   const [name, setName] = useState('');
   const [room, setRoom] = useState('');
+  const [rooms, setRooms] = useState<string[]>([]);
+
+  const wrapperRef = useRef(null);
+  const { state: showExistingRooms, setState: setShowExistingRooms } =
+    useOutsideAlerter(wrapperRef);
 
   useEffect(() => {
     if (!router.query.room) return;
     setRoom(router.query.room as string);
   }, [router.query.room, setRoom]);
 
+  useEffect(() => {
+    fetch('/api/rooms')
+      .then((res) => res.json())
+      .then((data) => setRooms(data));
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !room) {
+      return;
+    }
+
+    router.push(`/poker?name=${name}&room=${room}`);
+  };
+
   return (
     <form
       className={clsx([style.form, 'bg-neutral-800'])}
-      onSubmit={(e) => (!name || !room ? e.preventDefault() : null)}
+      onSubmit={handleSubmit}
     >
       <label htmlFor="Name">Name</label>
       <input
@@ -28,18 +59,52 @@ const Form: React.FC = () => {
         onChange={(event) => setName(event.target.value)}
         required
       />
-      <label htmlFor="room">Room</label>
-      <input
-        id="room"
-        placeholder="Room"
-        type="text"
-        value={room}
-        onChange={(event) => setRoom(event.target.value)}
-        required
-      />
-      <Link href={`/poker?name=${name}&room=${room}`}>
-        <button>Sign In</button>
-      </Link>
+      <div className={style.roomsWrapper} ref={wrapperRef}>
+        <label htmlFor="room">Room</label>
+        <input
+          autoComplete={'off'}
+          id="room"
+          placeholder={
+            rooms.length >= 1 ? 'Search or create room' : 'Create room'
+          }
+          type="text"
+          value={room}
+          onChange={(event) => setRoom(event.target.value)}
+          required
+          onFocus={() => setShowExistingRooms(true)}
+          style={
+            showExistingRooms && rooms.length >= 1
+              ? { borderRadius: '0.5rem 0.5rem 0 0 ' }
+              : undefined
+          }
+        />
+        {showExistingRooms && rooms.length >= 1 && (
+          <div className={style.rooms}>
+            <div className={style.disabledOption}>
+              - Currently existing rooms -
+            </div>
+            {rooms
+              .filter((existingRoom) => existingRoom.includes(room))
+              .map((room) => {
+                return (
+                  <div
+                    className={style.option}
+                    onClick={() => {
+                      setRoom(room);
+                      setShowExistingRooms(false);
+                    }}
+                  >
+                    {room}
+                  </div>
+                );
+              })}
+          </div>
+        )}
+      </div>
+
+      <button className={style.submitButton} type="submit">
+        Join room
+      </button>
     </form>
   );
 };

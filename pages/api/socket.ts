@@ -10,7 +10,6 @@ import {
   removeUser,
   updateUser,
 } from 'utils/socket/user';
-import { User } from '../../types';
 
 type Socket = NextApiResponse['socket'] & { server: { io: Server } };
 interface Data extends NextApiResponse {

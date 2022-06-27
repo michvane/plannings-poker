@@ -2,8 +2,6 @@ import { User } from 'types';
 
 let users: User[] = [];
 
-//TODO: Update users
-
 export const getUsers = () => users;
 
 export const addUser = ({
@@ -15,7 +13,6 @@ export const addUser = ({
   name: string;
   room: string;
 }) => {
-  // if (!name || !room) return { error: "name and room required." };
   const user = { id, name, room, selectedCard: null };
   users.push(user);
 
@@ -35,7 +32,6 @@ export const getUserById = (id: string) => {
 export const updateUser = (id: string, card: number) => {
   const index = users.findIndex((existingUser) => existingUser.id === id);
   if (index === -1) {
-    console.log('no user found');
     return;
   }
   users[index].selectedCard = card;
