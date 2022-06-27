@@ -1,5 +1,5 @@
 const Main: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  return <div>{children}</div>;
+  return <main>{children}</main>;
 };
 
 export default Main;

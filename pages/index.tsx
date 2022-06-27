@@ -1,13 +1,9 @@
-import Container from "components/atoms/Container";
-import Form from "components/organisms/Form";
-import { NextPage } from "next";
-import { useState } from "react";
-import Typography from "../components/Typography";
+import Container from 'components/atoms/Container';
+import Form from 'components/organisms/Form';
+import { NextPage } from 'next';
+import Typography from '../components/Typography';
 
 const Home: NextPage = () => {
-  const [name, setName] = useState("");
-  const [room, setRoom] = useState("");
-
   return (
     <div className="min-h-screen w-screen flex justify-center items-center">
       <Container
@@ -23,7 +19,7 @@ const Home: NextPage = () => {
           <br />
           Planning Poker
         </Typography>
-        <Form name={name} room={room} setName={setName} setRoom={setRoom} />
+        <Form />
       </Container>
     </div>
   );
