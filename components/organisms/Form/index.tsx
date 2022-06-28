@@ -23,7 +23,7 @@ const Form: React.FC = () => {
   useEffect(() => {
     fetch('/api/rooms')
       .then((res) => res.json())
-      .then((data) => setRooms(data));
+      .then((data) => setRooms(data.rooms));
   }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
