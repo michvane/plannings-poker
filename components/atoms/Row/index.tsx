@@ -1,7 +1,7 @@
 interface RowProps {
   name: string;
   showCards: boolean;
-  card: number | null | string;
+  card: null | string;
 }
 
 const Row: React.FC<RowProps> = ({ name, card, showCards }) => {

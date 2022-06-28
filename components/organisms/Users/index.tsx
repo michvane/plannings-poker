@@ -1,7 +1,6 @@
-import Container from "components/atoms/Container";
-import Row from "components/atoms/Row";
-import { User } from "types";
-import styles from "./users.module.scss";
+import Row from 'components/atoms/Row';
+import { User } from 'types';
+import styles from './users.module.scss';
 
 interface UsersProps {
   users: User[];

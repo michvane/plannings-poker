@@ -29,7 +29,7 @@ export const getUserById = (id: string) => {
   return users[index];
 };
 
-export const updateUser = (id: string, card: number) => {
+export const updateUser = (id: string, card: string) => {
   const index = users.findIndex((existingUser) => existingUser.id === id);
   if (index === -1) {
     return;

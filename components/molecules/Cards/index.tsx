@@ -1,12 +1,12 @@
-import clsx from "clsx";
-import styles from "./card.module.scss";
+import clsx from 'clsx';
+import styles from './card.module.scss';
 
 interface CardProps {
-  selectCardHandler: (card: number) => void;
-  selectedCard: number | null;
+  selectCardHandler: (card: string) => void;
+  selectedCard: string | null;
 }
 
-const cards = [0, 1, 2, 3, 5, 8];
+const cards = ['?', '0', '1', '2', '3', '5', '8'];
 
 const Cards: React.FC<CardProps> = ({ selectCardHandler, selectedCard }) => {
   return (

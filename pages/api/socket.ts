@@ -49,7 +49,7 @@ const SocketHandler = (_req: NextApiRequest, res: Data) => {
       socket.broadcast.to(user.room).emit(socketEvents.addUser, user);
     });
 
-    socket.on(socketEvents.updateCard, (card: number) => {
+    socket.on(socketEvents.updateCard, (card: string) => {
       updateUser(socket.id, card);
       const currentUser = getUserById(socket.id);
       const usersByRoom = getUsersByRoom(currentUser.room);

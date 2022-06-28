@@ -1,7 +1,4 @@
 ## TODO
 
-
-- add questionmark
-- Refactor user functions
-- send name but not as query params
-- security? 
+- Add more cards with choises
+- duplicate name protection

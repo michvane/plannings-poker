@@ -14,7 +14,7 @@ let socket: Socket;
 
 const Home: NextPage = () => {
   // const [messages, setMessages] = useState<string[]>([]);
-  const [selectedCard, setSelectedCard] = useState<number | null>(null);
+  const [selectedCard, setSelectedCard] = useState<string | null>(null);
   const [users, setUsers] = useState<User[]>([]);
   const [showCards, setShowCards] = useState(false);
 
@@ -64,7 +64,7 @@ const Home: NextPage = () => {
     socketInitializer();
   }, [router.query]);
 
-  const selectCardHandler = (e: number) => {
+  const selectCardHandler = (e: string) => {
     if (showCards) return;
     setSelectedCard(e);
     socket.emit(socketEvents.updateCard, e);

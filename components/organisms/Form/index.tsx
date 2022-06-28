@@ -1,19 +1,8 @@
 import clsx from 'clsx';
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import style from './form.module.scss';
 import useOutsideAlerter from 'hooks/OutsideAlerter';
-
-const options = [
-  { name: 'Swedish', value: 'sv' },
-  { name: 'English', value: 'en' },
-  {
-    type: 'group',
-    name: 'Group name',
-    items: [{ name: 'Spanish', value: 'es' }],
-  },
-];
 
 const Form: React.FC = () => {
   const router = useRouter();
@@ -88,6 +77,7 @@ const Form: React.FC = () => {
               .map((room) => {
                 return (
                   <div
+                    key={room}
                     className={style.option}
                     onClick={() => {
                       setRoom(room);
